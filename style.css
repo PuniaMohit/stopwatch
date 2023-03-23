@@ -1,6 +1,8 @@
 body {
-    background: #ffa600;
+    background: linear-gradient(to bottom, #33ccff 0%, #ff99cc 100%);
         height: 100%;
+        /* background-repeat: no-repeat; */
+        padding-bottom: 34%;
   }
   
   .container {
@@ -25,7 +27,7 @@ body {
 
   button {
     border-radius: 5px;
-    background: #ffa600;
+    background: #fd99cc;
     color: #fff;
     border: solid 1px #fff;
     text-decoration: none;
@@ -37,17 +39,32 @@ body {
   }
 
   ul{
-    width: 10%;
+    width: 60%;
     list-style: none;
     margin: 0 auto;
     color: white;
     font-size: 1.5rem;
+    border: 2px solid white;
     /* position: relative; */
   }
 
   li{
-    margin-top: 10%;
+    /* margin-top: 10%; */
+    width: 20%;
+    margin: 5% auto;
     /* position: absolute;
     top: 5%; */
+  }
+
+  #lap-time{
+    width: 15%;
+    margin: 1% auto;
+    font-size: 2rem;
+    color: white;
+    font-weight: 600;
+  }
+
+  #lap-time-list{
+    display: none;
   }
   

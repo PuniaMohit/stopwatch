@@ -11,6 +11,7 @@ let buttonStop = document.getElementById('button-stop');
 let buttonReset = document.getElementById('button-reset');
 let buttonLap = document.getElementById('button-lap');
 let lapTimeList = document.getElementById('lap-time-list');
+let lapTimeBox = document.getElementById('lap-time-list');
 let Interval;
 
 buttonStart.onclick = function () {
@@ -30,7 +31,6 @@ buttonStop.onclick = function () {
 }
 
 buttonReset.onclick = function () {
-  // lapTimeList.style.display='none'
   buttonStop.style.display = 'none'
   buttonLap.style.display = 'none'
   buttonStart.style.display = 'inline-block'
@@ -48,6 +48,7 @@ buttonReset.onclick = function () {
 }
 
 buttonLap.onclick = function () {
+  lapTimeBox.style.display = 'block'
   var presentTime = hours + ':' + minutes + ':' + seconds + ':' + tens
   const li = document.createElement("li");
   const textNode = document.createTextNode(presentTime)
