@@ -11,26 +11,28 @@ let buttonStop = document.getElementById('button-stop');
 let buttonReset = document.getElementById('button-reset');
 let buttonLap = document.getElementById('button-lap');
 let lapTimeList = document.getElementById('lap-time-list');
-let lapTimeBox = document.getElementById('lap-time-list');
+let lapTime = document.getElementById('lap-time');
 let Interval;
 
 buttonStart.onclick = function () {
   buttonStart.style.display = 'none'
   buttonStop.style.display = 'inline-block'
   buttonLap.style.display = 'inline-block'
-  lapTimeList.style.display = 'block'
   clearInterval(Interval);
   Interval = setInterval(startTimer, 10);
 }
 
 buttonStop.onclick = function () {
   clearInterval(Interval);
+  lapTime.style.display = 'block'
   buttonStop.style.display = 'none'
   buttonStart.style.display = 'inline-block'
   buttonLap.style.display = 'none'
 }
 
 buttonReset.onclick = function () {
+  lapTimeList.style.display = 'none'
+  lapTime.style.display = 'none'
   buttonStop.style.display = 'none'
   buttonLap.style.display = 'none'
   buttonStart.style.display = 'inline-block'
@@ -48,7 +50,8 @@ buttonReset.onclick = function () {
 }
 
 buttonLap.onclick = function () {
-  lapTimeBox.style.display = 'block'
+  lapTimeList.style.display = 'block'
+  lapTime.style.display = 'block'
   var presentTime = hours + ':' + minutes + ':' + seconds + ':' + tens
   const li = document.createElement("li");
   const textNode = document.createTextNode(presentTime)

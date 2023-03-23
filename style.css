@@ -57,6 +57,7 @@ body {
   }
 
   #lap-time{
+    display: none;
     width: 15%;
     margin: 1% auto;
     font-size: 2rem;
