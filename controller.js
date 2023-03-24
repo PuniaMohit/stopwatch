@@ -1,7 +1,8 @@
 let hours = 00;
 let minutes = 00;
 let seconds = 00;
-let tens = 00;
+let milliseconds = 00;
+let timeElapsed
 let appendTens = document.getElementById("tens")
 let appendSeconds = document.getElementById("seconds")
 let appendMinutes = document.getElementById("minutes")
@@ -17,6 +18,9 @@ let startTime;
 let stopTime;
 let stopwatchOn;
 let stopwatchStopped;
+let onlyForFirstTime
+let forDifference = 0
+
 
 buttonStart.addEventListener("click", startStopwatch);
 buttonStop.addEventListener("click", stopStopwatch);
@@ -45,6 +49,7 @@ function startStopwatch() {
   readoutUpdateRequestID = window.requestAnimationFrame(
     displayTimeElapsed
   );
+  let onlyForFirstTime = 0
 }
 
 function stopStopwatch() {
@@ -84,16 +89,33 @@ function resetStopwatch() {
 function lap() {
   lapTimeList.style.display = 'block'
   lapTime.style.display = 'block'
-  var presentTime = hours + ':' + minutes + ':' + seconds + ':' + tens
+  let lapTimeFirst
+  let lapTimeShowingSecondLast
+  let lapTimeShowingLast
+  // let lapTimeShowing= hours + ':' + minutes + ':' + seconds + ':' + milliseconds
   const li = document.createElement("li");
-  const textNode = document.createTextNode(presentTime)
+  if (onlyForFirstTime === 0) {
+    lapTimeFirst = hours + ':' + minutes + ':' + seconds + ':' + milliseconds
+    lapTimeShowingSecondLast = hours + ':' + minutes + ':' + seconds + ':' + milliseconds
+    const textNode = document.createTextNode(lapTimeFirst)
+  }
+  else {
+    lapTimeShowingLast = hours + ':' + minutes + ':' + seconds + ':' + milliseconds
+    if (forDifference == 0) {
+      lapTimeShowingSecondLast = hours + ':' + minutes + ':' + seconds + ':' + milliseconds
+    }     
+    let difference = lapTimeShowingLast - lapTimeShowingSecondLast
+    const textNode = document.createTextNode(difference)
+  }
   li.append(textNode);
+  // lapTimeList.appendChild(li)
   lapTimeList.insertBefore(li, lapTimeList.children[0])
+  onlyForFirstTime = 1
 }
 
 function displayTimeElapsed() {
-  let timeElapsed = Date.now() - startTime;
-  let seconds = Math.floor(timeElapsed / 1000);
+  timeElapsed = Date.now() - startTime;
+  seconds = Math.floor(timeElapsed / 1000);
   appendSeconds.innerHTML = seconds;
   if (seconds > 59) {
     minutes++;
@@ -114,7 +136,7 @@ function displayTimeElapsed() {
   if (hours > 9) {
     appendHours.innerHTML = hours;
   }
-  let milliseconds = Math.floor((timeElapsed % 1000) / 10);
+  milliseconds = Math.floor((timeElapsed % 1000) / 10);
   appendTens.innerHTML = milliseconds
   // let timeString = `${seconds}s ${milliseconds}`;
   // console.log(timeString)
