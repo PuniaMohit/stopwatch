@@ -12,44 +12,76 @@ let buttonReset = document.getElementById('button-reset');
 let buttonLap = document.getElementById('button-lap');
 let lapTimeList = document.getElementById('lap-time-list');
 let lapTime = document.getElementById('lap-time');
-let Interval;
+let readoutUpdateRequestID;
+let startTime;
+let stopTime;
+let stopwatchOn;
+let stopwatchStopped;
 
-buttonStart.onclick = function () {
+buttonStart.addEventListener("click", startStopwatch);
+buttonStop.addEventListener("click", stopStopwatch);
+buttonReset.addEventListener("click", resetStopwatch);
+buttonLap.addEventListener("click", lap);
+
+
+function startStopwatch() {
   buttonStart.style.display = 'none'
   buttonStop.style.display = 'inline-block'
   buttonLap.style.display = 'inline-block'
-  clearInterval(Interval);
-  Interval = setInterval(startTimer, 10);
+  if (stopwatchOn) {
+    return;
+  }
+  if (stopwatchStopped) {
+    startTime += Date.now() - stopTime;
+    stopwatchOn = true;
+    stopwatchStopped = false;
+    readoutUpdateRequestID = window.requestAnimationFrame(
+      displayTimeElapsed
+    );
+    return;
+  }
+  startTime = Date.now();
+  stopwatchOn = true;
+  readoutUpdateRequestID = window.requestAnimationFrame(
+    displayTimeElapsed
+  );
 }
 
-buttonStop.onclick = function () {
-  clearInterval(Interval);
-  lapTime.style.display = 'block'
+function stopStopwatch() {
+  // lapTime.style.display = 'block'
   buttonStop.style.display = 'none'
   buttonStart.style.display = 'inline-block'
   buttonLap.style.display = 'none'
+  if (!stopwatchOn) {
+    return;
+  }
+  stopTime = Date.now();
+  console.log(stopTime)
+  stopwatchOn = false;
+  stopwatchStopped = true;
+  window.cancelAnimationFrame(readoutUpdateRequestID);
 }
 
-buttonReset.onclick = function () {
+function resetStopwatch() {
   lapTimeList.style.display = 'none'
   lapTime.style.display = 'none'
   buttonStop.style.display = 'none'
   buttonLap.style.display = 'none'
   buttonStart.style.display = 'inline-block'
   lapTimeList.innerHTML = ''
-
-  clearInterval(Interval);
-  tens = "00";
-  seconds = "00";
-  minutes='00';
-  hours='00';
-  appendTens.innerHTML = tens;
-  appendSeconds.innerHTML = seconds;
-  appendMinutes.innerHTML = minutes;
-  appendHours.innerHTML = hours;
+  if (stopwatchOn) {
+    stopStopwatch();
+  }
+  stopwatchOn = false;
+  stopwatchStopped = false;
+  // setTimerReadout("0s 00");
+  appendTens.innerHTML = '00'
+  appendSeconds.innerHTML = '00'
+  appendMinutes.innerHTML = '00'
+  appendHours.innerHTML = '00'
 }
 
-buttonLap.onclick = function () {
+function lap() {
   lapTimeList.style.display = 'block'
   lapTime.style.display = 'block'
   var presentTime = hours + ':' + minutes + ':' + seconds + ':' + tens
@@ -59,29 +91,13 @@ buttonLap.onclick = function () {
   lapTimeList.insertBefore(li, lapTimeList.children[0])
 }
 
-
-function startTimer() {
-  tens++;
-  if (tens <= 9) {
-    appendTens.innerHTML = "0" + tens;
-  }
-
-  if (tens > 9) {
-    appendTens.innerHTML = tens;
-  }
-
-  if (tens > 99) {
-    seconds++;
-    appendSeconds.innerHTML = "0" + seconds;
-    tens = 0;
-    appendTens.innerHTML = "0" + 0;
-  }
-
-  if (seconds > 9) {
-    appendSeconds.innerHTML = seconds;
-  }
+function displayTimeElapsed() {
+  let timeElapsed = Date.now() - startTime;
+  let seconds = Math.floor(timeElapsed / 1000);
+  appendSeconds.innerHTML = seconds;
   if (seconds > 59) {
     minutes++;
+    console.log(minutes)
     appendMinutes.innerHTML = '0' + minutes;
     seconds = 0;
     appendSeconds.innerHTML = "0" + 0;
@@ -96,7 +112,31 @@ function startTimer() {
     appendMinutes.innerHTML = "0" + 0;
   }
   if (hours > 9) {
-    appendHours.innerHTML = hours
+    appendHours.innerHTML = hours;
   }
-
+  let milliseconds = Math.floor((timeElapsed % 1000) / 10);
+  appendTens.innerHTML = milliseconds
+  // let timeString = `${seconds}s ${milliseconds}`;
+  // console.log(timeString)
+  // setTimerReadout(timeString);
+  readoutUpdateRequestID = window.requestAnimationFrame(
+    displayTimeElapsed
+  );
 }
+
+// function setTimerReadout(text) {
+//   document.querySelector(".stopwatchReadout").textContent = text;
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
