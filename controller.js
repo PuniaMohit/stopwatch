@@ -19,7 +19,7 @@ let stopTime;
 let stopwatchOn;
 let stopwatchStopped;
 let onlyForFirstTime
-let forDifference = 0
+
 
 
 buttonStart.addEventListener("click", startStopwatch);
@@ -92,6 +92,8 @@ function lap() {
   let lapTimeFirst
   let lapTimeShowingSecondLast
   let lapTimeShowingLast
+  let forDifference = 0
+  let arr=[]
   // let lapTimeShowing= hours + ':' + minutes + ':' + seconds + ':' + milliseconds
   const li = document.createElement("li");
   if (onlyForFirstTime === 0) {
@@ -100,8 +102,11 @@ function lap() {
     const textNode = document.createTextNode(lapTimeFirst)
   }
   else {
+    lapTimeShowingSecondLast = hours + ':' + minutes + ':' + seconds + ':' + milliseconds
     lapTimeShowingLast = hours + ':' + minutes + ':' + seconds + ':' + milliseconds
-    if (forDifference == 0) {
+    arr.append(lapTimeShowingLast)
+
+    if (forDifference == 1) {
       lapTimeShowingSecondLast = hours + ':' + minutes + ':' + seconds + ':' + milliseconds
     }     
     let difference = lapTimeShowingLast - lapTimeShowingSecondLast
