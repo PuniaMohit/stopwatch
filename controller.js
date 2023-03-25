@@ -18,7 +18,8 @@ let startTime;
 let stopTime;
 let stopwatchOn;
 let stopwatchStopped;
-let onlyForFirstTime
+let lastLap = { hours: 0, minutes: 0, seconds: 0, ten: 0 };
+
 
 
 
@@ -86,36 +87,48 @@ function resetStopwatch() {
   appendHours.innerHTML = '00'
 }
 
+function leftPad(value) {
+  return value < 10 ? "0" + value : value;
+}
+
 function lap() {
   lapTimeList.style.display = 'block'
   lapTime.style.display = 'block'
-  let lapTimeFirst
-  let lapTimeShowingSecondLast
-  let lapTimeShowingLast
-  let forDifference = 0
-  let arr=[]
-  // let lapTimeShowing= hours + ':' + minutes + ':' + seconds + ':' + milliseconds
   const li = document.createElement("li");
-  if (onlyForFirstTime === 0) {
-    lapTimeFirst = hours + ':' + minutes + ':' + seconds + ':' + milliseconds
-    lapTimeShowingSecondLast = hours + ':' + minutes + ':' + seconds + ':' + milliseconds
-    const textNode = document.createTextNode(lapTimeFirst)
+  let lapHours = hours - lastLap.hours;
+  let lapMinutes = minutes - lastLap.minutes;
+  if (lapMinutes < 0) {
+     lapMinutes = minutes - lastLap.minutes + 60;
   }
-  else {
-    lapTimeShowingSecondLast = hours + ':' + minutes + ':' + seconds + ':' + milliseconds
-    lapTimeShowingLast = hours + ':' + minutes + ':' + seconds + ':' + milliseconds
-    arr.append(lapTimeShowingLast)
+  let lapSeconds = seconds - lastLap.seconds;
+  if (lapSeconds < 0) {
+     lapSeconds = seconds - lastLap.seconds + 60;
+  }
+  let lapTens = milliseconds - lastLap.ten;
 
-    if (forDifference == 1) {
-      lapTimeShowingSecondLast = hours + ':' + minutes + ':' + seconds + ':' + milliseconds
-    }     
-    let difference = lapTimeShowingLast - lapTimeShowingSecondLast
-    const textNode = document.createTextNode(difference)
+  if (lapTens < 0) {
+       lapTens = milliseconds - lastLap.ten + 100;
   }
+
+  lastLap = {
+    ten: milliseconds,
+    seconds: seconds,
+    minutes: minutes,
+    hours: hours
+  };
+  console.log(lapTens)
+  let showingLapTime=
+  leftPad(lapHours) +
+  ":" +
+  leftPad(lapMinutes) +
+  ":" +
+  leftPad(lapSeconds) +
+  ":" +
+  leftPad(lapTens)
+  const textNode = document.createTextNode(showingLapTime)
   li.append(textNode);
   // lapTimeList.appendChild(li)
   lapTimeList.insertBefore(li, lapTimeList.children[0])
-  onlyForFirstTime = 1
 }
 
 function displayTimeElapsed() {
@@ -123,11 +136,13 @@ function displayTimeElapsed() {
   seconds = Math.floor(timeElapsed / 1000);
   appendSeconds.innerHTML = seconds;
   if (seconds > 59) {
+    console.log(seconds)
     minutes++;
-    console.log(minutes)
-    appendMinutes.innerHTML = '0' + minutes;
-    seconds = 0;
+    appendMinutes.innerHTML = '0' + minutes;  
+    // seconds = Math.floor(timeElapsed / 1000);
     appendSeconds.innerHTML = "0" + 0;
+    seconds = 0;
+    console.log(seconds)
   }
   if (minutes > 9) {
     appendMinutes.innerHTML = minutes;
@@ -142,6 +157,7 @@ function displayTimeElapsed() {
     appendHours.innerHTML = hours;
   }
   milliseconds = Math.floor((timeElapsed % 1000) / 10);
+  console.log(milliseconds)
   appendTens.innerHTML = milliseconds
   // let timeString = `${seconds}s ${milliseconds}`;
   // console.log(timeString)
