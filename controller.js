@@ -21,8 +21,6 @@ let stopwatchStopped;
 let lastLap = { hours: 0, minutes: 0, seconds: 0, ten: 0 };
 
 
-
-
 buttonStart.addEventListener("click", startStopwatch);
 buttonStop.addEventListener("click", stopStopwatch);
 buttonReset.addEventListener("click", resetStopwatch);
@@ -50,11 +48,9 @@ function startStopwatch() {
   readoutUpdateRequestID = window.requestAnimationFrame(
     displayTimeElapsed
   );
-  let onlyForFirstTime = 0
 }
 
 function stopStopwatch() {
-  // lapTime.style.display = 'block'
   buttonStop.style.display = 'none'
   buttonStart.style.display = 'inline-block'
   buttonLap.style.display = 'none'
@@ -80,7 +76,6 @@ function resetStopwatch() {
   }
   stopwatchOn = false;
   stopwatchStopped = false;
-  // setTimerReadout("0s 00");
   appendTens.innerHTML = '00'
   appendSeconds.innerHTML = '00'
   appendMinutes.innerHTML = '00'
@@ -98,78 +93,67 @@ function lap() {
   let lapHours = hours - lastLap.hours;
   let lapMinutes = minutes - lastLap.minutes;
   if (lapMinutes < 0) {
-     lapMinutes = minutes - lastLap.minutes + 60;
+    lapMinutes = minutes - lastLap.minutes + 60;
   }
   let lapSeconds = seconds - lastLap.seconds;
   if (lapSeconds < 0) {
-     lapSeconds = seconds - lastLap.seconds + 60;
+    lapSeconds = seconds - lastLap.seconds + 60;
   }
   let lapTens = milliseconds - lastLap.ten;
 
   if (lapTens < 0) {
-       lapTens = milliseconds - lastLap.ten + 100;
+    lapTens = milliseconds - lastLap.ten + 100;
   }
-
   lastLap = {
     ten: milliseconds,
     seconds: seconds,
     minutes: minutes,
     hours: hours
   };
-  console.log(lapTens)
-  let showingLapTime=
-  leftPad(lapHours) +
-  ":" +
-  leftPad(lapMinutes) +
-  ":" +
-  leftPad(lapSeconds) +
-  ":" +
-  leftPad(lapTens)
+  let showingLapTime =
+    leftPad(lapHours) +
+    ":" +
+    leftPad(lapMinutes) +
+    ":" +
+    leftPad(lapSeconds) +
+    ":" +
+    leftPad(lapTens)
   const textNode = document.createTextNode(showingLapTime)
   li.append(textNode);
-  // lapTimeList.appendChild(li)
   lapTimeList.insertBefore(li, lapTimeList.children[0])
 }
 
 function displayTimeElapsed() {
   timeElapsed = Date.now() - startTime;
-  seconds = Math.floor(timeElapsed / 1000);
-  appendSeconds.innerHTML = seconds;
-  if (seconds > 59) {
-    console.log(seconds)
-    minutes++;
-    appendMinutes.innerHTML = '0' + minutes;  
-    // seconds = Math.floor(timeElapsed / 1000);
-    appendSeconds.innerHTML = "0" + 0;
-    seconds = 0;
-    console.log(seconds)
+  milliseconds = Math.floor((timeElapsed % 1000) / 10);
+  if (milliseconds < 10) {
+    appendTens.innerHTML = "0" + milliseconds;
+  } else {
+    appendTens.innerHTML = milliseconds;
   }
-  if (minutes > 9) {
+  seconds = Math.floor((timeElapsed % (1000 * 60)) / 1000);
+  if (seconds < 10) {
+    appendSeconds.innerHTML = "0" + seconds;
+  } else {
+    appendSeconds.innerHTML = seconds;
+  }
+  minutes = Math.floor((timeElapsed % (1000 * 60 * 60)) / (1000 * 60));
+  if (minutes < 10) {
+    appendMinutes.innerHTML = "0" + minutes;
+  } else {
     appendMinutes.innerHTML = minutes;
   }
-  if (minutes > 59) {
-    hours++;
-    appendHours.innerHTML = '0' + hours;
-    minutes = 0;
-    appendMinutes.innerHTML = "0" + 0;
-  }
-  if (hours > 9) {
+  hours = Math.floor((timeElapsed % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  if (hours < 10) {
+    appendHours.innerHTML = "0" + hours;
+  } else {
     appendHours.innerHTML = hours;
   }
-  milliseconds = Math.floor((timeElapsed % 1000) / 10);
-  console.log(milliseconds)
-  appendTens.innerHTML = milliseconds
-  // let timeString = `${seconds}s ${milliseconds}`;
-  // console.log(timeString)
-  // setTimerReadout(timeString);
   readoutUpdateRequestID = window.requestAnimationFrame(
     displayTimeElapsed
   );
 }
 
-// function setTimerReadout(text) {
-//   document.querySelector(".stopwatchReadout").textContent = text;
-// }
 
 
 
